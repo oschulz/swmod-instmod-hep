@@ -101,9 +101,8 @@ if ! . swmod.sh init ; then
 	exit 1
 fi
 
-BUILDDIR=`mktemp -t -d "$(whoami)-build-${PKG_TARNAME}-XXXXXX"`
+BUILDDIR=`mktemp -t -d "$(whoami)-build-${PKG_TARNAME}-XXXXXX"` || exit 1
 echo "Build directory: \"${BUILDDIR}\""
-CURRDIR=`pwd`
 
 error_clean_abort() {
 	echo "ERROR: Installation failed." 1>&2
