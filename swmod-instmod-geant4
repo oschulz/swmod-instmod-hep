@@ -63,7 +63,7 @@ if ! . swmod.sh init ; then
 	exit 1
 fi
 
-BUILDDIR=`mktemp -t -d "$(whoami)-build-${PKG_TARNAME}-XXXXXX"` || exit 1
+BUILDDIR=`mktemp -d -t "$(whoami)-build-${PKG_TARNAME}-XXXXXX"` || exit 1
 echo "Build directory: \"${BUILDDIR}\""
 
 error_clean_abort() {
