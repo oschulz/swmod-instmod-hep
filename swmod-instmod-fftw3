@@ -1,0 +1,96 @@
+#!/bin/bash
+
+# Copyright (C) 2009-2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
+#
+# This program is free software; you can redistribute it and/or modify
+# it under the terms of the GNU General Public License as published by
+# the Free Software Foundation; either version 2 of the License, or
+# (at your option) any later version.
+#
+# This program is distributed in the hope that it will be useful,
+# but WITHOUT ANY WARRANTY; without even the implied warranty of
+# MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+# GNU General Public License for more details.
+#
+# You should have received a copy of the GNU General Public License
+# along with this program; if not, write to the Free Software
+# Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+
+
+PKG_NAME="FFTW3"
+PKG_TARNAME="fftw3"
+
+
+WHAT="$1"
+
+if [ -z "${WHAT}" ] ; then
+	echo "Syntax: $0 WHAT [CONFIGURE_OPTION] ..." 1>&2
+	echo 1>&2
+	echo "For \"WHAT\", specify either a version number (e.g. \"6.02.01\") to download, or" 1>&2
+	echo "the path to the ${PKG_NAME} source directory (may be an rsync-compatible" 1>&2
+	echo "remote path)." 1>&2
+
+	exit 1
+fi
+
+shift 1
+
+
+if ! . swmod.sh init ; then
+	echo "ERROR: swmod not available, aborting." 1>&2
+	exit 1
+fi
+
+BUILDDIR=`mktemp -d -t "$(whoami)-build-${PKG_TARNAME}-XXXXXX"` || exit 1
+echo "Build directory: \"${BUILDDIR}\""
+
+error_clean_abort() {
+	echo "ERROR: Installation failed." 1>&2
+	rm -rf "${BUILDDIR}"
+	exit 1
+}
+
+
+error_noclean_abort() {
+	echo "ERROR: Installation failed, build directory: \"${BUILDDIR}\"." 1>&2
+	exit 1
+}
+
+
+if (echo "${WHAT}" | grep -q '^[0-9]\+[.][0-9]\+[.][0-9]\+$') ; then
+	PKG_VERSION="${WHAT}" \
+	&& (
+		cd "${BUILDDIR}" \
+		&& DOWNLOAD_URL="http://www.fftw.org/fftw-${PKG_VERSION}.tar.gz" \
+		&& echo "Downloading ${PKG_NAME} version ${PKG_VERSION} from ${DOWNLOAD_URL}" \
+		&& curl "${DOWNLOAD_URL}" |
+			tar --strip-components 1 -C "${BUILDDIR}" --strip=1 -x -z \
+	) || error_clean_abort
+else
+	PKG_FROM="${WHAT}" \
+	&& echo "Copying ${PKG_NAME} sources from ${PKG_FROM} to ${BUILDDIR}" \
+	&& rsync -rlpt "${PKG_FROM}/" "${BUILDDIR}/" \
+	&& PKG_VERSION=`(cd "${BUILDDIR}/" && (head -n 1 NEWS | grep -o '[0-9.]*'))` \
+	|| error_clean_abort
+fi \
+&& . swmod.sh setinst "${PKG_TARNAME}@${PKG_VERSION}" \
+|| error_clean_abort
+
+echo "Installing ${PKG_NAME} version ${PKG_VERSION}"
+echo "Install prefix: ${SWMOD_INST_PREFIX}"
+echo "Configure options:" $DEFAULT_BUILD_OPTS "$@"
+
+(
+	cd "${BUILDDIR}" \
+	&& . swmod.sh install "$@"
+) || error_noclean_abort
+
+echo ""
+echo "Successfully installed ${PKG_NAME} to \"${SWMOD_INST_PREFIX}\"."
+echo "Use"
+echo ""
+echo "    swmod load ${PKG_TARNAME}@${PKG_VERSION}"
+echo ""
+echo "to load the newly installed ${PKG_NAME}."
+
+rm -rf "${BUILDDIR}"
