@@ -85,12 +85,25 @@ ADDITIONAL_BUILD_OPTS="\
 DEFAULT_BUILD_OPTS=`echo ${BASIC_BUILD_OPTS} ${ADDITIONAL_BUILD_OPTS}`
 
 
+if FFTW3_PREFIX=$(dirname $(dirname `which fftw-wisdom`)) && FFTW3_MODNAME=`. swmod.sh list "${FFTW3_PREFIX}" 2> /dev/null` ; then
+	echo "FFTW3 loaded via swmod, will add ${FFTW3_MODNAME} to target package dependencies."
+
+	DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-incdir=${FFTW3_PREFIX}/include"
+
+	if \test -d "${FFTW3_PREFIX}/lib64" ; then
+		DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-libdir=${FFTW3_PREFIX}/lib64"
+	else
+		DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-libdir=${FFTW3_PREFIX}/lib"
+	fi
+fi
+
+
 swi_get_download_url () {
 	echo "https://root.cern.ch/download/root_v${1}.source.tar.gz"
 }
 
 swi_get_version_no() {
-	`(cd "${BUILDDIR}/" && (test -d .git && (git describe HEAD | sed 's/^v[ -_]\?//; s/^\([0-9]\+\)-\([0-9]\+\)-\([0-9]\+\)/\1.\2.\3/') || (cat build/version_number | sed 's|/|.|g')))`
+	test -d .git && (git describe HEAD | sed 's/^v[ -_]\?//; s/^\([0-9]\+\)-\([0-9]\+\)-\([0-9]\+\)/\1.\2.\3/') || (cat build/version_number | sed 's|/|.|g')
 }
 
 swi_is_version_no() {
@@ -102,7 +115,8 @@ swi_build_and_install() {
 	&& ./configure "$@" \
 	&& make -j `swi_cpu_cores` \
 	&& make install \
-	&& echo '. "$SWMOD_PREFIX/bin/thisroot.sh"' > "${SWMOD_INST_PREFIX}/swmodrc.sh"	
+	&& echo '. "$SWMOD_PREFIX/bin/thisroot.sh"' > "${SWMOD_INST_PREFIX}/swmodrc.sh" \
+	&& (test -n "${FFTW3_MODNAME}" && . swmod.sh add-deps "${FFTW3_MODNAME}" || true)
 }
 
 WHAT=${1}; shift 1
