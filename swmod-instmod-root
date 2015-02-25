@@ -25,28 +25,24 @@ BASIC_BUILD_OPTS="\
 --fail-on-missing \
 --enable-shared \
 --enable-soversion \
+--enable-explicitlink \
 "
 
 ADDITIONAL_BUILD_OPTS="\
 --enable-asimage \
 --enable-astiff \
---enable-explicitlink \
 --enable-fftw3 \
 --enable-gdml \
 --enable-gsl-shared \
 --enable-http \
 --enable-mathmore \
 --enable-minuit2 \
---enable-mysql \
 --enable-opengl \
 --enable-python \
---enable-qt \
---enable-qtgsi \
 --enable-roofit \
---enable-shadowpw \
 --enable-ssl \
---enable-sqlite \
 --enable-table \
+--enable-tmva \
 --enable-unuran \
 --enable-xml \
 --enable-xft \
@@ -54,27 +50,34 @@ ADDITIONAL_BUILD_OPTS="\
 --disable-afs \
 --disable-alien \
 --disable-bonjour \
---disable-castor \
 --disable-builtin-afterimage \
 --disable-builtin-freetype \
 --disable-builtin-ftgl \
 --disable-builtin-pcre \
 --disable-builtin-zlib \
+--disable-castor \
+--disable-davix \
 --disable-chirp \
 --disable-dcache \
+--disable-fitsio \
 --disable-gfal \
 --disable-globus \
 --disable-krb5 \
 --disable-ldap \
 --disable-monalisa \
+--disable-mysql \
 --disable-odbc \
 --disable-oracle \
 --disable-pgsql \
 --disable-pythia6 \
+--disable-qt \
+--disable-qtgsi \
 --disable-rfio \
 --disable-rpath \
 --disable-ruby \
 --disable-sapdb \
+--disable-shadowpw \
+--disable-sqlite \
 --disable-srp \
 --disable-xrootd \
 "
