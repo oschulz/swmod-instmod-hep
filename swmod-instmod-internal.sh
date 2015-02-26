@@ -37,6 +37,20 @@ swi_cpu_cores() {
 }
 
 
+swi_add_bin_dep() {
+	local program="${1}"
+	if (which "${program}" &> /dev/null) ; then
+		local progpath=`which "${program}"`
+		local modprefix=$(dirname $(dirname "${progpath}"))
+		local modname=`. swmod.sh list "${modprefix}" 2> /dev/null`
+		if [ -n "${modname}" ] ; then
+			echo "${program} loaded via swmod, adding ${modname} to target package dependencies."
+			. swmod.sh add-deps "${modname}"
+		fi
+	fi
+}
+
+
 swi_is_generic_version_no() {
 	echo "${1}" | grep -q '^[0-9]\+\([.][0-9]\+\)\+$'
 }
@@ -160,6 +174,9 @@ swmod_instmod_install() {
 
 		cd "${BUILDDIR}" \
 		&& swi_build_and_install_internal "$@" \
+		&& swi_add_bin_dep gcc \
+		&& swi_add_bin_dep clang \
+		&& echo "Installation complete."
 	) || local STATUS="fail"
 
 
