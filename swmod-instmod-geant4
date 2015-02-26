@@ -35,8 +35,8 @@ ADDITIONAL_BUILD_OPTS="\
   -DGEANT4_INSTALL_EXAMPLES=ON \
 "
 
-if (clhep-config --prefix &> /dev/null) ; then
-	BASIC_BUILD_OPTS="${BASIC_BUILD_OPTS} -DGEANT4_USE_SYSTEM_CLHEP=ON -DCLHEP_ROOT_DIR=`clhep-config --prefix | sed 's/"//g'`"
+if CLHEP_PREFIX=`clhep-config --prefix | sed 's/\"//g' 2> /dev/null` ; then
+	BASIC_BUILD_OPTS="${BASIC_BUILD_OPTS} -DGEANT4_USE_SYSTEM_CLHEP=ON -DCLHEP_ROOT_DIR=${CLHEP_PREFIX}"
 else
 	BASIC_BUILD_OPTS="${BASIC_BUILD_OPTS} -DGEANT4_USE_SYSTEM_CLHEP=OFF"
 fi
@@ -73,7 +73,7 @@ swi_build_and_install() {
 	&& cmake -DCMAKE_INSTALL_PREFIX="${SWMOD_INST_PREFIX}" "$@" "`pwd`/.." \
     && make -j `swi_cpu_cores` install \
 	&& echo '. "$SWMOD_PREFIX/bin/geant4.sh" > /dev/null' > "${SWMOD_INST_PREFIX}/swmodrc.sh" \
-	&& ( (echo "${SWMOD_LOADED_PREFIXES}" | grep -q '/clhep/') && (. swmod.sh adddeps clhep@"`clhep-config --version | grep -o '[0-9.]*'`") )
+	&& ( test -n "${CLHEP_PREFIX}" && swi_add_prefix_dep "${CLHEP_PREFIX}" || true)
 }
 
 WHAT=${1}; shift 1
