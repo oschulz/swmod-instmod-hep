@@ -78,6 +78,18 @@ swmod_instmod_install() {
 		return 1
 	fi
 
+
+	if ! . swmod.sh init ; then
+		echo "ERROR: swmod not available, aborting." 1>&2
+		return 1
+	fi
+
+	if ! (. swmod.sh list 2>/dev/null) ; then
+		echo "ERROR: Current version of swmod is too old, please install a recent version." 1>&2
+		return 1
+	fi
+
+
 	if [ ""`type -t swi_get_download_url` != "function" ] ; then
 		echo "ERROR: Function swi_get_download_url must be defined." 1>&2
 		return 1
@@ -87,13 +99,6 @@ swmod_instmod_install() {
 		echo "ERROR: Function swi_get_download_url must be defined." 1>&2
 		return 1
 	fi
-
-
-	if ! . swmod.sh init ; then
-		echo "ERROR: swmod not available, aborting." 1>&2
-		return 1
-	fi
-
 
 	if [ ""`type -t swi_pkg_tarname` = "function" ] ; then
 		local PKG_TARNAME=`swi_pkg_tarname "${PKG_NAME}"` || (
