@@ -37,6 +37,16 @@ swi_cpu_cores() {
 }
 
 
+swi_add_prefix_dep() {
+	local modprefix="${1}"
+	local modname=`. swmod.sh list "${modprefix}" 2> /dev/null`
+	if [ -n "${modname}" ] ; then
+		echo "Prefix ${modprefix} loaded via swmod, adding ${modname} to target package dependencies."
+		. swmod.sh add-deps "${modname}"
+	fi
+}
+
+
 swi_add_bin_dep() {
 	local program="${1}"
 	if (which "${program}" &> /dev/null) ; then
