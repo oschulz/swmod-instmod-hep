@@ -167,7 +167,7 @@ swmod_instmod_install() {
 		&& rsync -rlpt "${PKG_FROM}/" "${BUILDDIR}/" \
 		&& local PKG_VERSION=`(cd "${BUILDDIR}/" && swi_get_version_no)`
 	fi \
-	&& . swmod.sh setinst "${PKG_TARNAME}@${PKG_VERSION}" \
+	&& . swmod.sh target "${PKG_TARNAME}@${PKG_VERSION}" \
 	&& if [ -e "${SWMOD_INST_PREFIX}" ] ; then
 		rmdir "${SWMOD_INST_PREFIX}" || (
 			echo "Error: Install prefix \"${SWMOD_INST_PREFIX}\" exists and is not a removeable empty directory."
