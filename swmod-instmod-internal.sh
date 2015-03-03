@@ -170,7 +170,7 @@ swmod_instmod_install() {
 				local TAR_UNZIP_OPT="-z"
 			fi \
 			&& echo "Downloading ${PKG_NAME} version ${PKG_VERSION} from ${DOWNLOAD_URL}" \
-			&& curl "${DOWNLOAD_URL}" |
+			&& curl -L "${DOWNLOAD_URL}" |
 				tar --strip-components 1 -C "${BUILDDIR}" --strip=1 -x "${TAR_UNZIP_OPT}" \
 		)
 	else
