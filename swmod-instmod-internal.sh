@@ -32,11 +32,6 @@
 # ===========================================================================
 
 
-swi_cpu_cores() {
-	grep -c '^processor' /proc/cpuinfo 2>/dev/null || sysctl -n hw.ncpu 2>/dev/null || echo 4
-}
-
-
 swi_add_prefix_dep() {
 	local modprefix="${1}"
 	local modname=`. swmod.sh list "${modprefix}" 2> /dev/null`

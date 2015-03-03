@@ -113,7 +113,7 @@ swi_is_version_no() {
 swi_build_and_install() {
 	export ROOTSYS="${SWMOD_INST_PREFIX}" \
 	&& ./configure "$@" \
-	&& make -j `swi_cpu_cores` \
+	&& make -j`. swmod.sh nthreads` \
 	&& make install \
 	&& echo '. "$SWMOD_PREFIX/bin/thisroot.sh"' > "${SWMOD_INST_PREFIX}/swmodrc.sh" \
 	&& (test -n "${FFTW3_MODNAME}" && . swmod.sh add-deps "${FFTW3_MODNAME}" || true) \
