@@ -69,9 +69,7 @@ swi_is_version_no() {
 }
 
 swi_build_and_install() {
-	mkdir build && cd build \
-	&& cmake -DCMAKE_INSTALL_PREFIX="${SWMOD_INST_PREFIX}" "$@" "`pwd`/.." \
-    && make -j `swi_cpu_cores` install \
+	. swmod.sh install "$@" \
 	&& echo '. "$SWMOD_PREFIX/bin/geant4.sh" > /dev/null' > "${SWMOD_INST_PREFIX}/swmodrc.sh" \
 	&& ( test -n "${CLHEP_PREFIX}" && swi_add_prefix_dep "${CLHEP_PREFIX}" || true)
 }

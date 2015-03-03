@@ -34,9 +34,7 @@ swi_is_version_no() {
 }
 
 swi_build_and_install() {
-	mkdir build && cd build \
-	&& cmake -DCMAKE_INSTALL_PREFIX="${SWMOD_INST_PREFIX}" "$@" "`pwd`/../CLHEP" \
-    && make -j `swi_cpu_cores` install
+	cd CLHEP && . swmod.sh install "$@"
 }
 
 swmod_instmod_install CLHEP "$@"
