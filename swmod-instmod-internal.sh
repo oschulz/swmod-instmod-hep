@@ -163,15 +163,15 @@ swmod_instmod_install() {
 			cd "${BUILDDIR}" \
 			&& local DOWNLOAD_URL=`swi_get_download_url "${PKG_VERSION}"` \
 			&& if (echo "${DOWNLOAD_URL}" | grep -q '\.tar\.bz2') ; then
-				local TAR_UNZIP_OPT="-j"
+				local UNZIPPER="bunzip2"
 			elif (echo "${DOWNLOAD_URL}" | grep -q '\.tar\.xz') ; then
-				local TAR_UNZIP_OPT="-J"
+				local UNZIPPER="unxz"
 			else
-				local TAR_UNZIP_OPT="-z"
+				local UNZIPPER="gunzip"
 			fi \
 			&& echo "Downloading ${PKG_NAME} version ${PKG_VERSION} from ${DOWNLOAD_URL}" \
-			&& curl -L "${DOWNLOAD_URL}" |
-				tar --strip-components 1 -C "${BUILDDIR}" --strip=1 -x "${TAR_UNZIP_OPT}" \
+			&& curl -L "${DOWNLOAD_URL}" | "${UNZIPPER}" \
+				| tar --strip-components 1 -C "${BUILDDIR}" --strip=1 -x \
 		)
 	else
 		local PKG_FROM="${WHAT}" \
