@@ -110,7 +110,7 @@ swmod_instmod_install() {
 		return 1
 	fi
 
-	if ! (. swmod.sh list 2>/dev/null) ; then
+	if ! (. swmod.sh list 1>/dev/null 2>&1) ; then
 		echo "ERROR: Current version of swmod is too old, please install a recent version." 1>&2
 		return 1
 	fi
