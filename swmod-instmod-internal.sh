@@ -138,12 +138,14 @@ swmod_instmod_install() {
 	fi
 
 
-	local BUILDDIR=`mktemp -d -t "$(whoami)-build-${PKG_TARNAME}-XXXXXX"` || (
+	local BUILDAREA=`mktemp -d -t "$(whoami)-build-${PKG_TARNAME}-XXXXXX"` || (
 		echo "ERROR: Can't create temporary build directory." 1>&2
 		return 1
 	)
-	echo "Build directory: \"${BUILDDIR}\""
+	echo "Build area: \"${BUILDAREA}\""
 
+	BUILDDIR="${BUILDAREA}/${PKG_TARNAME}"
+	mkdir "${BUILDDIR}"
 
 	local OLD_INST_PREFIX="${SWMOD_INST_PREFIX}"
 
@@ -203,7 +205,7 @@ swmod_instmod_install() {
 	local inst_prefix="${SWMOD_INST_PREFIX}"
 	export SWMOD_INST_PREFIX="${OLD_INST_PREFIX}"
 
-	test -d "${BUILDDIR}" && rm -rf "${BUILDDIR}"
+	test -d "${BUILDAREA}" && rm -rf "${BUILDAREA}"
 
 	if [ "${STATUS}" != "ok" ] ; then
 		echo "ERROR: Installation failed." 1>&2
