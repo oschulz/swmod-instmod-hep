@@ -28,15 +28,11 @@ DEFAULT_BUILD_OPTS="\
 --enable-languages=c,c++,fortran,objc,obj-c++ \
 --enable-libstdcxx-time=yes \
 --enable-linker-build-id \
---enable-multiarch \
 --enable-objc-gc \
 --enable-shared \
 --enable-threads=posix \
 --host=x86_64-linux-gnu \
 --target=x86_64-linux-gnu \
---with-abi=m64 \
---with-arch-32=i686 \
---with-multilib-list=m32,m64 \
 --with-system-zlib \
 --with-tune=generic \
 "
