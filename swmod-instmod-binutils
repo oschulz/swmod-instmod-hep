@@ -22,6 +22,7 @@ SWMOD_INSTMOD_PATH=$( (echo "${0}" | grep -q '^/') && dirname "${0}" || (cd "`pw
 
 
 DEFAULT_BUILD_OPTS="\
+--enable-plugins \
 --enable-shared \
 "
 
