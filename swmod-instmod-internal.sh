@@ -65,6 +65,13 @@ swi_build_and_install_internal() {
 }
 
 
+swi_rm_lib_la() {
+	if [ -d "${SWMOD_INST_PREFIX}" ] ; then
+		find "${SWMOD_INST_PREFIX}" -name '*.la' -exec rm '{}' ';'
+	fi
+}
+
+
 swmod_instmod_install() {
 	local PKG_NAME="${1}"
 	local WHAT="${2}"
@@ -174,6 +181,7 @@ swmod_instmod_install() {
 
 		cd "${BUILDDIR}" \
 		&& swi_build_and_install_internal "$@" \
+		&& swi_rm_lib_la \
 		&& swi_add_bin_dep gcc \
 		&& swi_add_bin_dep clang \
 		&& echo "Installation complete."
