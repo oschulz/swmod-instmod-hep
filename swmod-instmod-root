@@ -116,7 +116,8 @@ swi_build_and_install() {
 	&& make -j `swi_cpu_cores` \
 	&& make install \
 	&& echo '. "$SWMOD_PREFIX/bin/thisroot.sh"' > "${SWMOD_INST_PREFIX}/swmodrc.sh" \
-	&& (test -n "${FFTW3_MODNAME}" && . swmod.sh add-deps "${FFTW3_MODNAME}" || true)
+	&& (test -n "${FFTW3_MODNAME}" && . swmod.sh add-deps "${FFTW3_MODNAME}" || true) \
+	&& swi_add_bin_dep python
 }
 
 WHAT=${1}; shift 1
