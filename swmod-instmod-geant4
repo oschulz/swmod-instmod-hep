@@ -40,6 +40,14 @@ else
 	BASIC_BUILD_OPTS="${BASIC_BUILD_OPTS} -DGEANT4_USE_SYSTEM_CLHEP=OFF"
 fi
 
+
+if XERCES_C_PREFIX=$(dirname $(dirname `which XInclude`)) && XERCES_C_MODNAME=`. swmod.sh list "${XERCES_C_PREFIX}" 2> /dev/null` ; then
+	echo "Xerces-C loaded via swmod, will add ${XERCES_C_MODNAME} to target package dependencies."
+
+	BASIC_BUILD_OPTS="${BASIC_BUILD_OPTS} -DXERCESC_ROOT_DIR=${XERCES_C_PREFIX}"
+fi
+
+
 DEFAULT_BUILD_OPTS=`echo ${BASIC_BUILD_OPTS} ${ADDITIONAL_BUILD_OPTS}`
 
 
@@ -70,7 +78,8 @@ swi_is_version_no() {
 swi_build_and_install() {
 	. swmod.sh install "$@" \
 	&& echo '. "$SWMOD_PREFIX/bin/geant4.sh" > /dev/null' > "${SWMOD_INST_PREFIX}/swmodrc.sh" \
-	&& ( test -n "${CLHEP_PREFIX}" && swi_add_prefix_dep "${CLHEP_PREFIX}" || true)
+	&& (test -n "${CLHEP_PREFIX}" && swi_add_prefix_dep "${CLHEP_PREFIX}" || true) \
+	&& (test -n "${XERCES_C_MODNAME}" && . swmod.sh add-deps "${XERCES_C_MODNAME}" || true)
 }
 
 WHAT=${1}; shift 1
