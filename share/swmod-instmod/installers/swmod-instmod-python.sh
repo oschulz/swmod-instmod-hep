@@ -1,6 +1,4 @@
-#!/bin/bash
-
-# Copyright (C) 2009-2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
+# Copyright (C) 2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -17,35 +15,24 @@
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
 
 
-SWMOD_INSTMOD_PATH=$( (echo "${0}" | grep -q '^/') && dirname "${0}" || (cd "`pwd`/`dirname \"${0}\"`" && pwd) )
-. "${SWMOD_INSTMOD_PATH}/swmod-instmod-internal.sh"
-
-
 DEFAULT_BUILD_OPTS="\
 --enable-shared \
---enable-threads \
---enable-portable-binary \
+--with-ensurepip \
 "
 
-ARCH=`uname -m`
-if [ "${ARCH}" == "x86_64" -o "${ARCH}" == "i686" ] ; then
-	DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --enable-sse2"
-fi
-echo "DEFAULT_BUILD_OPTS=$DEFAULT_BUILD_OPTS"
 
+swi_default_build_opts() {
+	echo "${DEFAULT_BUILD_OPTS}"
+}
 
 swi_get_download_url () {
-	echo "http://www.fftw.org/fftw-${1}.tar.gz"
+	echo "https://www.python.org/ftp/python/${1}/Python-${1}.tar.xz"	
 }
 
 swi_get_version_no() {
-	head -n 1 NEWS | grep -o '[0-9.]*'
+	grep '#define PY_VERSION[^[:alnum:]_]' ./Include/patchlevel.h | grep -o '[0-9.]*'
 }
 
 swi_is_version_no() {
 	echo "${1}" | grep -q '^[0-9]\+[.][0-9]\+[.][0-9]\+$'
 }
-
-WHAT=${1}; shift 1
-swmod_instmod_install FFTW3 "${WHAT}" ${DEFAULT_BUILD_OPTS} "$@"
-

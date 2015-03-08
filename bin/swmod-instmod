@@ -1,3 +1,5 @@
+#!/bin/bash
+
 # Copyright (C) 2009-2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
 #
 # This program is free software; you can redistribute it and/or modify
@@ -17,13 +19,14 @@
 
 # ===========================================================================
 
-# Required functions:
+# Required functions in installers:
 #
 # swi_get_download_url PACKAGE_VERSION
 # swi_get_version_no
 
 
-# Optional functions:
+# Optional functions in installers:
+# swi_default_build_opts
 # swi_is_version_no WHAT
 # swi_build_and_install BUILD_OPTS  # defaults to "source swmod.sh install"
 # swi_modify_pkg_version PACKAGE_VERSION
@@ -52,6 +55,15 @@ swi_add_bin_dep() {
 			echo "${program} loaded via swmod, adding ${modname} to target package dependencies."
 			. swmod.sh add-deps "${modname}"
 		fi
+	fi
+}
+
+
+swi_default_build_opts_internal() {
+	if [ ""`type -t swi_default_build_opts` = "function" ] ; then
+		(swi_default_build_opts "$@")
+	else
+		echo ""
 	fi
 }
 
@@ -190,12 +202,12 @@ swmod_instmod_install() {
 		)
 	fi \
 	&& (
-		echo "Installing ${PKG_NAME} version ${PKG_VERSION}" \
+		local DEFAULT_BUILD_OPTS=`swi_default_build_opts_internal` \
+		&& echo "Installing ${PKG_NAME} version ${PKG_VERSION}" \
 		&& echo "Install prefix: ${SWMOD_INST_PREFIX}" \
-		&& echo "${BUILDSYS} options:" "$@" \
-
-		cd "${BUILDDIR}" \
-		&& swi_build_and_install_internal "$@" \
+		&& echo "${BUILDSYS} options:" ${DEFAULT_BUILD_OPTS} "$@" \
+		&& cd "${BUILDDIR}" \
+		&& swi_build_and_install_internal ${DEFAULT_BUILD_OPTS} "$@" \
 		&& swi_rm_lib_la \
 		&& swi_add_bin_dep gcc \
 		&& swi_add_bin_dep clang \
@@ -222,3 +234,72 @@ swmod_instmod_install() {
 	echo ""
 	echo "to load the newly installed ${PKG_NAME}."
 }
+
+
+
+SWMOD_INSTMOD_PATH=$( dirname $( (echo "${0}" | grep -q '^/') && dirname "${0}" || (cd "`pwd`/`dirname \"${0}\"`" && pwd) ) )
+INSTALLER_DIR="${SWMOD_INSTMOD_PATH}/share/swmod-instmod/installers"
+
+
+swmod_instmod_usage() {
+echo >&2 "Usage: swmod-instmod PKG_NAME VERSION [BUILD_OPTION] ..."
+echo >&2 "or:    swmod-instmod PKG_NAME PATH/TO/SOURCE/CODE [configure/CMake options]"
+cat >&2 <<EOF
+
+Automatic swmod-based software package/module installation.
+
+If a version is specified, the source code will be downloaded automatically,
+if an existing source code directory is specified, the version will be
+determined automatically.
+
+Install the specified software package into an swmod compatible module with
+the same name and version (created in the directory \$SWMOD_INST_BASE, see
+the swmod documentation for details).
+
+When installing from an existing source directory, it must be in a clean state
+(no "configure", "CMake", "make", etc. run before).
+
+Build options are passed through to the package build configuration (e.g.
+as configure or cmake options, depending on the build system of the package).
+
+Example usage:
+
+    # swmod-instmod geant4.10.01 -DGEANT4_INSTALL_DATA=OFF
+
+    # swmod-instmod geant4 /path/to/src/geant4.10.01
+EOF
+
+echo >&2 ""
+echo >&2 "Installers for the following software packages are available:"
+echo >&2 ""
+ls "${INSTALLER_DIR}/swmod-instmod-"*".sh" | sed 's|.*swmod-instmod-\(.*\).sh|* \1|'
+
+} # swmod_add_deps_usage()
+
+
+PKG_NAME="${1}"
+WHAT="${2}"
+shift 2
+
+if [ -z "${PKG_NAME}" -o -z "${WHAT}" ] ; then
+	swmod_instmod_usage
+	exit 1
+fi
+
+
+INSTALLER_SCRIPT="${INSTALLER_DIR}/swmod-instmod-${PKG_NAME}.sh"
+
+
+if [ ! -f "${INSTALLER_SCRIPT}" ] ; then
+	echo "Error: No installer script for ${PKG_NAME} found in \"${INSTALLER_DIR}\"" >&2
+	exit 1
+fi
+
+(
+	source "${INSTALLER_SCRIPT}" || (
+		echo "Error: Sourcing installer script \"${INSTALLER_SCRIPT}\" failed" >&2
+		exit 1
+	)
+
+	swmod_instmod_install "${PKG_NAME}" "${WHAT}" "$@"
+)

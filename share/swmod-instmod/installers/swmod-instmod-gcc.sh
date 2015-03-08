@@ -1,6 +1,4 @@
-#!/bin/bash
-
-# Copyright (C) 2009-2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
+# Copyright (C) 2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
-
-SWMOD_INSTMOD_PATH=$( (echo "${0}" | grep -q '^/') && dirname "${0}" || (cd "`pwd`/`dirname \"${0}\"`" && pwd) )
-. "${SWMOD_INSTMOD_PATH}/swmod-instmod-internal.sh"
 
 
 DEFAULT_BUILD_OPTS="\
@@ -40,6 +34,9 @@ DEFAULT_BUILD_OPTS="\
 # Inherit enable/disable gnu-unique-object from current GCC:
 DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} "`gcc -v 2>&1 |grep -o '[-]-\(enable\|disable\)-gnu-unique-object' 2>/dev/null | tail -n 1`
 
+swi_default_build_opts() {
+	echo "${DEFAULT_BUILD_OPTS}"
+}
 
 swi_get_download_url () {
 	echo "http://ftpmirror.gnu.org/gcc/gcc-${1}/gcc-${1}.tar.bz2"
@@ -64,6 +61,3 @@ swi_build_and_install() {
 	&& make install \
 	&& swi_add_bin_dep as
 }
-
-WHAT=${1}; shift 1
-swmod_instmod_install GCC "${WHAT}" ${DEFAULT_BUILD_OPTS} "$@"

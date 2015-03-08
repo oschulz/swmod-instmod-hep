@@ -1,6 +1,4 @@
-#!/bin/bash
-
-# Copyright (C) 2009-2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
+# Copyright (C) 2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
-
-SWMOD_INSTMOD_PATH=$( (echo "${0}" | grep -q '^/') && dirname "${0}" || (cd "`pwd`/`dirname \"${0}\"`" && pwd) )
-. "${SWMOD_INSTMOD_PATH}/swmod-instmod-internal.sh"
 
 
 BASIC_BUILD_OPTS="\
@@ -54,6 +48,10 @@ fi
 DEFAULT_BUILD_OPTS=`echo ${BASIC_BUILD_OPTS} ${ADDITIONAL_BUILD_OPTS}`
 
 
+swi_default_build_opts() {
+	echo "${DEFAULT_BUILD_OPTS}"
+}
+
 swi_get_download_url () {
 	local PKG_VERSION="${1}" \
 	&& local PKG_VERSION_MAJOR=$(echo "${PKG_VERSION}" | cut -d '.' -f 1) \
@@ -84,6 +82,3 @@ swi_build_and_install() {
 	&& (test -n "${CLHEP_PREFIX}" && swi_add_prefix_dep "${CLHEP_PREFIX}" || true) \
 	&& (test -n "${XERCES_C_MODNAME}" && . swmod.sh add-deps "${XERCES_C_MODNAME}" || true)
 }
-
-WHAT=${1}; shift 1
-swmod_instmod_install Geant4 "${WHAT}" ${DEFAULT_BUILD_OPTS} "$@"

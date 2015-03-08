@@ -1,6 +1,4 @@
-#!/bin/bash
-
-# Copyright (C) 2009-2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
+# Copyright (C) 2015 Oliver Schulz <oliver.schulz@tu-dortmund.de>
 #
 # This program is free software; you can redistribute it and/or modify
 # it under the terms of the GNU General Public License as published by
@@ -15,10 +13,6 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
-
-
-SWMOD_INSTMOD_PATH=$( (echo "${0}" | grep -q '^/') && dirname "${0}" || (cd "`pwd`/`dirname \"${0}\"`" && pwd) )
-. "${SWMOD_INSTMOD_PATH}/swmod-instmod-internal.sh"
 
 
 BASIC_BUILD_OPTS="\
@@ -98,6 +92,10 @@ if FFTW3_PREFIX=$(dirname $(dirname `which fftw-wisdom`)) && FFTW3_MODNAME=`. sw
 fi
 
 
+swi_default_build_opts() {
+	echo "${DEFAULT_BUILD_OPTS}"
+}
+
 swi_get_download_url () {
 	echo "https://root.cern.ch/download/root_v${1}.source.tar.gz"
 }
@@ -119,6 +117,3 @@ swi_build_and_install() {
 	&& (test -n "${FFTW3_MODNAME}" && . swmod.sh add-deps "${FFTW3_MODNAME}" || true) \
 	&& swi_add_bin_dep python
 }
-
-WHAT=${1}; shift 1
-swmod_instmod_install ROOT "${WHAT}" ${DEFAULT_BUILD_OPTS} "$@"
