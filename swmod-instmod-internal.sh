@@ -181,6 +181,7 @@ swmod_instmod_install() {
 		&& rsync -rlpt "${PKG_FROM}/" "${BUILDDIR}/" \
 		&& local PKG_VERSION=`(cd "${BUILDDIR}/" && swi_get_version_no)`
 	fi \
+	&& local PKG_VERSION=`echo "${PKG_VERSION:-unknown}" | head -n1 | sed 's/[^A-Za-z0-9._-]//g'` \
 	&& . swmod.sh target "${PKG_TARNAME}@${PKG_VERSION}" \
 	&& if [ -e "${SWMOD_INST_PREFIX}" ] ; then
 		rmdir "${SWMOD_INST_PREFIX}" || (
