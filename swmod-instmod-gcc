@@ -54,7 +54,7 @@ swi_is_version_no() {
 }
 
 swi_build_and_install() {
-	./contrib/download_prerequisites \
+	(test ! -e "gmp" -o ! -e "mpc" -o ! -e "mpfr" && ./contrib/download_prerequisites || true) \
 	&& local src_dir=`pwd` \
 	&& local build_dir="../"`basename "${src_dir}"`_build_"`. swmod.sh hostspec`" \
 	&& mkdir "${build_dir}" \
