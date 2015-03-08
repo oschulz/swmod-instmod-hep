@@ -79,18 +79,21 @@ ADDITIONAL_BUILD_OPTS="\
 DEFAULT_BUILD_OPTS=`echo ${BASIC_BUILD_OPTS} ${ADDITIONAL_BUILD_OPTS}`
 
 
-if FFTW3_PREFIX=$(dirname $(dirname `which fftw-wisdom`)) && FFTW3_MODNAME=`. swmod.sh list "${FFTW3_PREFIX}" 2> /dev/null` ; then
-	echo "FFTW3 loaded via swmod, will add ${FFTW3_MODNAME} to target package dependencies."
+FFTW3_PREFIX=$( (dirname $(dirname `which fftw-wisdom`)) 2> /dev/null )
+if [ -n "${FFTW3_PREFIX}" ] ; then
+	FFTW3_MODNAME=`. swmod.sh list "${FFTW3_PREFIX}" 2> /dev/null`
+	if [ -n "${FFTW3_MODNAME}" ] ; then
+		echo "FFTW3 loaded via swmod, will add ${FFTW3_MODNAME} to target package dependencies."
 
-	DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-incdir=${FFTW3_PREFIX}/include"
+		DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-incdir=${FFTW3_PREFIX}/include"
 
-	if \test -d "${FFTW3_PREFIX}/lib64" ; then
-		DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-libdir=${FFTW3_PREFIX}/lib64"
-	else
-		DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-libdir=${FFTW3_PREFIX}/lib"
+		if \test -d "${FFTW3_PREFIX}/lib64" ; then
+			DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-libdir=${FFTW3_PREFIX}/lib64"
+		else
+			DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-libdir=${FFTW3_PREFIX}/lib"
+		fi
 	fi
 fi
-
 
 swi_default_build_opts() {
 	echo "${DEFAULT_BUILD_OPTS}"
