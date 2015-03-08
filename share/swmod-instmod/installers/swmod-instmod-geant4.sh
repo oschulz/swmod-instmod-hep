@@ -29,21 +29,24 @@ ADDITIONAL_BUILD_OPTS="\
   -DGEANT4_INSTALL_EXAMPLES=ON \
 "
 
-if CLHEP_PREFIX=`clhep-config --prefix | sed 's/\"//g' 2> /dev/null` ; then
-	echo "Xerces-C loaded via swmod, will add ${XERCES_C_MODNAME} to target package dependencies."
+CLHEP_PREFIX=`(clhep-config --prefix | sed 's/\"//g') 2> /dev/null`
+if [ -n "${CLHEP_PREFIX}" ] ; then
+	echo "CLHEP available, will use it for Geant4 installation."
 
 	BASIC_BUILD_OPTS="${BASIC_BUILD_OPTS} -DGEANT4_USE_SYSTEM_CLHEP=ON -DCLHEP_ROOT_DIR=${CLHEP_PREFIX}"
 else
 	BASIC_BUILD_OPTS="${BASIC_BUILD_OPTS} -DGEANT4_USE_SYSTEM_CLHEP=OFF"
 fi
 
+XERCES_C_PREFIX=$( (dirname $(dirname `which XInclude`)) 2> /dev/null )
+if [ -n "${XERCES_C_PREFIX}" ] ; then
+	XERCES_C_MODNAME=`. swmod.sh list "${XERCES_C_PREFIX}" 2> /dev/null`
+	if [ -n "${XERCES_C_MODNAME}" ] ; then
+		echo "Xerces-C loaded via swmod, will add ${XERCES_C_MODNAME} to target package dependencies."
 
-if XERCES_C_PREFIX=$(dirname $(dirname `which XInclude`)) && XERCES_C_MODNAME=`. swmod.sh list "${XERCES_C_PREFIX}" 2> /dev/null` ; then
-	echo "Xerces-C loaded via swmod, will add ${XERCES_C_MODNAME} to target package dependencies."
-
-	BASIC_BUILD_OPTS="${BASIC_BUILD_OPTS} -DXERCESC_ROOT_DIR=${XERCES_C_PREFIX}"
+		BASIC_BUILD_OPTS="${BASIC_BUILD_OPTS} -DXERCESC_ROOT_DIR=${XERCES_C_PREFIX}"
+	fi
 fi
-
 
 DEFAULT_BUILD_OPTS=`echo ${BASIC_BUILD_OPTS} ${ADDITIONAL_BUILD_OPTS}`
 
