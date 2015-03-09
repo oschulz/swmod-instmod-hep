@@ -4,9 +4,9 @@ Collection of swmod-Based Install Scripts for Particle Physics Software
 This project provides fully automatic installation of the following
 software as [swmod](https://github.com/oschulz/swmod) modules:
 
-* [ROOT] (http://root.cern.ch/)
-* [CLHEP] (http://cern.ch/clhep/)
-* [Geant4] (http://geant4.cern.ch/)
+* [ROOT] (http://root.cern.ch/) (version 5.x and 6.x)
+* [CLHEP] (http://cern.ch/clhep/) (version 2.1.2.0 and higher)
+* [Geant4] (http://geant4.cern.ch/) (version 9.5 and higher)
 
 Also, installers for frequently problematic dependencies of these software
 packages are provided. Use them in case you cannot satisfy the required
