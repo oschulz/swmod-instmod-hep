@@ -83,5 +83,16 @@ swi_build_and_install() {
 	. swmod.sh install "$@" \
 	&& echo '. "$SWMOD_PREFIX/bin/geant4.sh" > /dev/null' > "${SWMOD_INST_PREFIX}/swmodrc.sh" \
 	&& (test -n "${CLHEP_PREFIX}" && swi_add_prefix_dep "${CLHEP_PREFIX}" || true) \
-	&& (test -n "${XERCES_C_MODNAME}" && . swmod.sh add-deps "${XERCES_C_MODNAME}" || true)
+	&& (test -n "${XERCES_C_MODNAME}" && . swmod.sh add-deps "${XERCES_C_MODNAME}" || true) \
+	&& (
+		# Fix architecture.gmk if geant4 is built with internal Expat:
+		if (ls "${SWMOD_INST_PREFIX}"/lib*/libG4expat* 1>/dev/null 2>&1) ; then
+			local arch_makefile=`ls "${SWMOD_INST_PREFIX}"/share/*/geant4make/config/architecture.gmk 2>/dev/null | head -n1` \
+			&& if [ -n "${arch_makefile}" ] ; then
+				echo "Fixing \"${arch_makefile}\" to use \"-lG4expat\" instead of \"-lexpat\"." \
+				&& cat "${arch_makefile}" | sed 's/-lexpat/-lG4expat/' > "${arch_makefile}.fixed" \
+				&& mv "${arch_makefile}.fixed" "${arch_makefile}"
+			fi
+		fi
+	)
 }
