@@ -37,8 +37,9 @@ or at least
 Usage
 -----
 
-Simply run one of the `swmod-instmod-...` scripts, specifying the software
-version to be installed (the source code will be downloaded automatically):
+Simply run the `swmod-instmod` script (in `bin`), specifying the software
+package and version to be installed (the source code will be downloaded
+automatically):
 
     # swmod-instmod PACKAGE VERSION [configure/CMake options]
 
@@ -99,15 +100,15 @@ Examples
 
 Download, install and load ROOT v6.02.05:
 
-    # swmod-instmod-root 6.02.05
+    # swmod-instmod root 6.02.05
     # swmod load root@6.02.05
 
 Install and load CLHEP v2.1.4.1:
 
-    # swmod-instmod-clhep 2.1.4.1
+    # swmod-instmod clhep 2.1.4.1
     # swmod load clhep@2.1.4.1
 
 Install and load Geant4 v10.0.0:
 
-    # swmod-instmod-geant4 10.0.0
+    # swmod-instmod geant4 10.0.0
     # swmod load geant4@2.1.4.1
