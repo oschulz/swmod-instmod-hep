@@ -44,7 +44,7 @@ local src_dir=`pwd` \
     && local build_dir="../"`basename "${src_dir}"`_build_"`. swmod.sh hostspec`" \
 	&& mkdir "${build_dir}" \
 	&& cd "${build_dir}" \
-	&& . swmod.sh "${src_dir}"/configure "$@" \
+	&& . swmod.sh "${src_dir}"/configure --without-p11-kit "$@" \
 	&& make -j`. swmod.sh nthreads` \
 	&& make install
 }
