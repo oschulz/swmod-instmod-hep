@@ -28,7 +28,7 @@ swi_default_build_opts() {
 }
 
 swi_get_download_url () {
-    echo "http://reflection.oss.ou.edu/gnu/gnu/gsl/gsl-${1}.tar.gz"
+    echo "http://reflection.oss.ou.edu/gnu/gsl/gsl-${1}.tar.gz"
 }
 
 swi_get_version_no() {
