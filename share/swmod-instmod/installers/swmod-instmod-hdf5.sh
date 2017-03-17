@@ -29,7 +29,7 @@ swi_default_build_opts() {
 }
 
 swi_get_download_url () {
-	echo "http://www.hdfgroup.org/ftp/HDF5/current/src/hdf5-${1}.tar.gz"
+    echo "https://support.hdfgroup.org/ftp/HDF5/releases/hdf5-${1}/src/hdf5-${1}.tar.gz"
 }
 
 swi_get_version_no() {
