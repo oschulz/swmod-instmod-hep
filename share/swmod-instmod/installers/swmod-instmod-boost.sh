@@ -45,7 +45,7 @@ swi_build_and_install() {
 	&& local build_dir="../"`basename "${src_dir}"`_build_"`. swmod.sh hostspec`" \
 	&& mkdir "${build_dir}" \
 	&& cd "${src_dir}" \
-	&& source "${src_dir}"/bootstrap.sh --prefix="${SWMOD_INST_PREFIX}" \
+	&& ./bootstrap.sh --prefix="${SWMOD_INST_PREFIX}" \
 	&& cd "${src_dir}" \
 	&& ./b2 install --prefix="${SWMOD_INST_PREFIX}"
 }
