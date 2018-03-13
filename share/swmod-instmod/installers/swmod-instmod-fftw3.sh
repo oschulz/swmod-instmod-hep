@@ -44,3 +44,12 @@ swi_is_version_no() {
 	echo "${1}" | grep -q '^[0-9]\+[.][0-9]\+[.][0-9]\+$'
 }
 
+swi_build_and_install() {
+local src_dir=`pwd` \
+    && local build_dir="../"`basename "${src_dir}"`_build_"`. swmod.sh hostspec`" \
+	&& mkdir "${build_dir}" \
+	&& cd "${build_dir}" \
+	&& . swmod.sh "${src_dir}"/configure "$@" \
+	&& make -j`. swmod.sh nthreads` \
+	&& make install
+}
