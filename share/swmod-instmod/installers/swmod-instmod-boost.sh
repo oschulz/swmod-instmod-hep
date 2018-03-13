@@ -47,5 +47,6 @@ swi_build_and_install() {
 	&& cd "${src_dir}" \
 	&& ./bootstrap.sh --prefix="${SWMOD_INST_PREFIX}" \
 	&& cd "${src_dir}" \
-	&& ./b2 install --prefix="${SWMOD_INST_PREFIX}"
+	&& ./b2 -j`. swmod.sh nthreads` link=shared threading=multi stage --prefix="${SWMOD_INST_PREFIX}" \
+	&& ./b2 -j`. swmod.sh nthreads` link=shared threading=multi install --prefix="${SWMOD_INST_PREFIX}"
 }
