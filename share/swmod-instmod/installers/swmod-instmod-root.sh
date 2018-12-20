@@ -16,64 +16,68 @@
 
 
 BASIC_BUILD_OPTS="\
---fail-on-missing \
---enable-shared \
---enable-soversion \
---enable-explicitlink \
+-Dfail-on-missing=ON \
+-Dshared=ON \
+-Dsoversion=ON \
+-Dexplicitlink=ON \
 "
 
 ADDITIONAL_BUILD_OPTS="\
---enable-asimage \
---enable-astiff \
---enable-fftw3 \
---enable-gdml \
---enable-gsl-shared \
---enable-http \
---enable-mathmore \
---enable-minuit2 \
---enable-opengl \
---enable-python \
---enable-roofit \
---enable-ssl \
---enable-table \
---enable-tmva \
---enable-unuran \
---enable-xml \
---enable-xft \
+-Dasimage=ON \
+-Dastiff=ON \
+-Dfftw3=ON \
+-Dgdml=ON \
+-Dgsl-shared=ON \
+-Dhttp=ON \
+-Dmathmore=ON \
+-Dminuit2=ON \
+-Dopengl=ON \
+-Dpython=ON \
+-Droofit=ON \
+-Dssl=ON \
+-Dtable=ON \
+-Dtmva=ON \
+-Dunuran=ON \
+-Dxml=ON \
+-Dxft=ON \
+-Dbuiltin_gsl=ON \
+-Dbuiltin_tbb=ON
 \
---disable-afs \
---disable-alien \
---disable-bonjour \
---disable-builtin-afterimage \
---disable-builtin-freetype \
---disable-builtin-ftgl \
---disable-builtin-pcre \
---disable-builtin-zlib \
---disable-castor \
---disable-davix \
---disable-chirp \
---disable-dcache \
---disable-fitsio \
---disable-gfal \
---disable-globus \
---disable-krb5 \
---disable-ldap \
---disable-monalisa \
---disable-mysql \
---disable-odbc \
---disable-oracle \
---disable-pgsql \
---disable-pythia6 \
---disable-qt \
---disable-qtgsi \
---disable-rfio \
---disable-rpath \
---disable-ruby \
---disable-sapdb \
---disable-shadowpw \
---disable-sqlite \
---disable-srp \
---disable-xrootd \
+-Dafs=OFF \
+-Dalien=OFF \
+-Dbonjour=OFF \
+-Dbuiltin-afterimage=OFF \
+-Dbuiltin-freetype=OFF \
+-Dbuiltin-ftgl=OFF \
+-Dbuiltin-pcre=OFF \
+-Dbuiltin-zlib=OFF \
+-Dcastor=OFF \
+-Ddavix=OFF \
+-Dchirp=OFF \
+-Ddcache=OFF \
+-Dfitsio=OFF \
+-Dgfal=OFF \
+-Dglobus=OFF \
+-Dhdfs=OFF \
+-Dkrb5=OFF \
+-Dldap=OFF \
+-Dmonalisa=OFF \
+-Dmysql=OFF \
+-Dodbc=OFF \
+-Doracle=OFF \
+-Dpgsql=OFF \
+-Dpythia6=OFF \
+-Dpythia8=OFF \
+-Dqt=OFF \
+-Dqtgsi=OFF \
+-Drfio=OFF \
+-Drpath=OFF \
+-Druby=OFF \
+-Dsapdb=OFF \
+-Dshadowpw=OFF \
+-Dsqlite=OFF \
+-Dsrp=OFF \
+-Dxrootd=OFF \
 "
 
 DEFAULT_BUILD_OPTS=`echo ${BASIC_BUILD_OPTS} ${ADDITIONAL_BUILD_OPTS}`
@@ -113,9 +117,7 @@ swi_is_version_no() {
 
 swi_build_and_install() {
 	export ROOTSYS="${SWMOD_INST_PREFIX}" \
-	&& ./configure "$@" \
-	&& make -j`. swmod.sh nthreads` \
-	&& make install \
+	&& . swmod.sh install "$@" \
 	&& echo '. "$SWMOD_PREFIX/bin/thisroot.sh"' > "${SWMOD_INST_PREFIX}/swmodrc.sh" \
 	&& (test -n "${FFTW3_MODNAME}" && . swmod.sh add-deps "${FFTW3_MODNAME}" || true) \
 	&& swi_add_bin_dep python
