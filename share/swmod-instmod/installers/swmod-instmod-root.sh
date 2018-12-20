@@ -40,6 +40,8 @@ ADDITIONAL_BUILD_OPTS="\
 -Dunuran=ON \
 -Dxml=ON \
 -Dxft=ON \
+-Dbuiltin_gsl=ON \
+-Dbuiltin_tbb=ON
 \
 -Dafs=OFF \
 -Dalien=OFF \
@@ -56,6 +58,7 @@ ADDITIONAL_BUILD_OPTS="\
 -Dfitsio=OFF \
 -Dgfal=OFF \
 -Dglobus=OFF \
+-Dhdfs=OFF \
 -Dkrb5=OFF \
 -Dldap=OFF \
 -Dmonalisa=OFF \
@@ -64,6 +67,7 @@ ADDITIONAL_BUILD_OPTS="\
 -Doracle=OFF \
 -Dpgsql=OFF \
 -Dpythia6=OFF \
+-Dpythia8=OFF \
 -Dqt=OFF \
 -Dqtgsi=OFF \
 -Drfio=OFF \
@@ -113,7 +117,7 @@ swi_is_version_no() {
 
 swi_build_and_install() {
 	export ROOTSYS="${SWMOD_INST_PREFIX}" \
-	. swmod.sh install "$@" \
+	&& . swmod.sh install "$@" \
 	&& echo '. "$SWMOD_PREFIX/bin/thisroot.sh"' > "${SWMOD_INST_PREFIX}/swmodrc.sh" \
 	&& (test -n "${FFTW3_MODNAME}" && . swmod.sh add-deps "${FFTW3_MODNAME}" || true) \
 	&& swi_add_bin_dep python
