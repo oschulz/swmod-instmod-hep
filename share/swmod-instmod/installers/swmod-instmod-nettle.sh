@@ -13,35 +13,30 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#
+# Created Mar. 29, 2016, Giovanni Benato <gbenato@berkeley.edu>
+#
 
+BASIC_BUILD_OPTS=""
 
-DEFAULT_BUILD_OPTS="\
---enable-shared \
---enable-threads \
---enable-portable-binary \
-"
+ADDITIONAL_BUILD_OPTS=""
 
-ARCH=`uname -m`
-if [ "${ARCH}" == "x86_64" -o "${ARCH}" == "i686" ] ; then
-	DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --enable-sse2"
-fi
-echo "DEFAULT_BUILD_OPTS=$DEFAULT_BUILD_OPTS"
-
+DEFAULT_BUILD_OPTS=`echo ${BASIC_BUILD_OPTS} ${ADDITIONAL_BUILD_OPTS}`
 
 swi_default_build_opts() {
 	echo "${DEFAULT_BUILD_OPTS}"
 }
 
 swi_get_download_url () {
-	echo "http://www.fftw.org/fftw-${1}.tar.gz"
+    echo "https://ftp.gnu.org/gnu/nettle/nettle-${1}.tar.gz"
 }
 
 swi_get_version_no() {
-	head -n 1 NEWS | grep -o '[0-9.]*'
+	cat configure | grep 'PACKAGE_VERSION[^_]' | grep -o '[0-9.]\+' | head -1
 }
 
 swi_is_version_no() {
-	echo "${1}" | grep -q '^[0-9]\+[.][0-9]\+[.][0-9]\+$'
+	echo "${1}" | grep -q '^[0-9]\+[.][0-9]\+$'
 }
 
 swi_build_and_install() {

@@ -13,43 +13,40 @@
 # You should have received a copy of the GNU General Public License
 # along with this program; if not, write to the Free Software
 # Foundation, Inc., 59 Temple Place - Suite 330, Boston, MA 02111-1307, USA.
+#
+# Created Mar. 28, 2016, Giovanni Benato <gbenato@berkeley.edu>
+#
 
+BASIC_BUILD_OPTS=""
 
-DEFAULT_BUILD_OPTS="\
---enable-shared \
---enable-threads \
---enable-portable-binary \
-"
+ADDITIONAL_BUILD_OPTS=""
 
-ARCH=`uname -m`
-if [ "${ARCH}" == "x86_64" -o "${ARCH}" == "i686" ] ; then
-	DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --enable-sse2"
-fi
-echo "DEFAULT_BUILD_OPTS=$DEFAULT_BUILD_OPTS"
-
+DEFAULT_BUILD_OPTS=`echo ${BASIC_BUILD_OPTS} ${ADDITIONAL_BUILD_OPTS}`
 
 swi_default_build_opts() {
 	echo "${DEFAULT_BUILD_OPTS}"
 }
 
 swi_get_download_url () {
-	echo "http://www.fftw.org/fftw-${1}.tar.gz"
+	echo "https://sourceforge.net/projects/boost/files/boost/${1}/boost_${1:0:1}_${1:2:2}_${1:5:1}.tar.gz/download"
 }
 
 swi_get_version_no() {
-	head -n 1 NEWS | grep -o '[0-9.]*'
+        cat Jamroot | grep 'BOOST_VERSION[^_]' | grep -o '[0-9.]\+' | head -1
 }
 
 swi_is_version_no() {
 	echo "${1}" | grep -q '^[0-9]\+[.][0-9]\+[.][0-9]\+$'
+	echo ""
 }
 
 swi_build_and_install() {
-local src_dir=`pwd` \
-    && local build_dir="../"`basename "${src_dir}"`_build_"`. swmod.sh hostspec`" \
+    local src_dir=`pwd` \
+	&& local build_dir="../"`basename "${src_dir}"`_build_"`. swmod.sh hostspec`" \
 	&& mkdir "${build_dir}" \
-	&& cd "${build_dir}" \
-	&& . swmod.sh "${src_dir}"/configure "$@" \
-	&& make -j`. swmod.sh nthreads` \
-	&& make install
+	&& cd "${src_dir}" \
+	&& ./bootstrap.sh --prefix="${SWMOD_INST_PREFIX}" \
+	&& cd "${src_dir}" \
+	&& ./b2 -j`. swmod.sh nthreads` link=shared threading=multi stage --prefix="${SWMOD_INST_PREFIX}" \
+	&& ./b2 -j`. swmod.sh nthreads` link=shared threading=multi install --prefix="${SWMOD_INST_PREFIX}"
 }
