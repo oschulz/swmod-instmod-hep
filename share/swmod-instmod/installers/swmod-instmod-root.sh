@@ -89,12 +89,12 @@ if [ -n "${FFTW3_PREFIX}" ] ; then
 	if [ -n "${FFTW3_MODNAME}" ] ; then
 		echo "FFTW3 loaded via swmod, will add ${FFTW3_MODNAME} to target package dependencies."
 
-		DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-incdir=${FFTW3_PREFIX}/include"
+		DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} -DFFTW_INCLUDE_DIR=${FFTW3_PREFIX}/include"
 
 		if \test -d "${FFTW3_PREFIX}/lib64" ; then
-			DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-libdir=${FFTW3_PREFIX}/lib64"
+			DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} -DFFTW_LIBRARY=${FFTW3_PREFIX}/lib64/libfftw3.so"
 		else
-			DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} --with-fftw3-libdir=${FFTW3_PREFIX}/lib"
+			DEFAULT_BUILD_OPTS="${DEFAULT_BUILD_OPTS} -DFFTW_LIBRARY=${FFTW3_PREFIX}/lib/libfftw3.so"
 		fi
 	fi
 fi
